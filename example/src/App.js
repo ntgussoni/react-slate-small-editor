@@ -3,10 +3,14 @@ import React, { Component } from "react";
 import initialValue from "./initial-value.json";
 
 import {
-  ReactSlateMediumEditor,
+  ReactSlateSmallEditor,
   Value,
   KeyUtils
-} from "react-slate-medium-editor";
+} from "react-slate-small-editor";
+
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export default class App extends Component {
   constructor(props) {
@@ -23,7 +27,7 @@ export default class App extends Component {
 
   render() {
     const { value } = this.state;
-
+    const maxCharacterCount = 150;
     return (
       <div>
         <div
@@ -34,10 +38,21 @@ export default class App extends Component {
             width: "50%"
           }}
         >
-          <ReactSlateMediumEditor
+          <ReactSlateSmallEditor
             onChange={this.onChange}
             value={value}
-            onFileSelected={() => {}}
+            maxCharacterCount={maxCharacterCount}
+            onFileSelected={async () => {
+              // Do your thing with the file
+              await timeout(300);
+              return "https://images.pexels.com/photos/459793/pexels-photo-459793.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260";
+            }}
+            renderCount={count => `${count} / ${maxCharacterCount}`}
+            style={{
+              border: "1px solid #121212",
+              borderRadius: "6px",
+              padding: "20px"
+            }}
           />
         </div>
       </div>

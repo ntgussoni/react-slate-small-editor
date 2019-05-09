@@ -1,13 +1,12 @@
 import React, { Fragment } from "react";
 import { ReactComponent as ImageIcon } from "../../../assets/icons/image-regular.svg";
 import { insertImage, setData } from "../../../helpers";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 export default class ImageUploadButton extends React.Component {
   handleFileSelection = e => {
-    const { onFileSelected, editor, toggleSideMenu } = this.props;
-    const file = e.target.files[0];
-    toggleSideMenu(e);
+    const { onFileSelected, editor } = this.props;
+    const [file] = e.target.files;
     const newNode = editor.query(insertImage, { file }, null);
     if (onFileSelected) {
       onFileSelected(file).then(url => {
@@ -20,8 +19,6 @@ export default class ImageUploadButton extends React.Component {
   };
 
   render() {
-    const { opened } = this.props;
-
     return (
       <Fragment>
         <input
@@ -32,7 +29,6 @@ export default class ImageUploadButton extends React.Component {
         />
         <Button
           delay={50}
-          opened={opened}
           reversed
           onMouseDown={() => this.uploadInput.click()}
         >
@@ -47,27 +43,7 @@ export default class ImageUploadButton extends React.Component {
 
 const Button = styled.span`
   cursor: pointer;
-  border: 1px solid #000;
   background: white;
-  border-radius: 100%;
-
-  ${props =>
-    props.opened &&
-    css`
-      transform: scale(1) rotate(0deg);
-      opacity: 1;
-      transition-duration: ${props => props.delay}ms;
-      transition-timing-function: ease-in;
-    `}
-  ${props =>
-    !props.opened &&
-    css`
-      transform: scale(0) rotate(-45deg);
-      opacity: 0;
-      transition-duration: ${props => props.delay}ms;
-      transition-timing-function: ease-in;
-    `}
-
   &:hover {
     svg {
       color: #ccc;

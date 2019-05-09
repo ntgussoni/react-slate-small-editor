@@ -1,5 +1,5 @@
-import ReactSlateMediumEditor from "./components/editor";
+import ReactSlateSmallEditor from "./components/editor";
 import { Value, KeyUtils } from "slate";
 import Plain from "slate-plain-serializer";
 
-export { ReactSlateMediumEditor, Value, KeyUtils, Plain };
+export { ReactSlateSmallEditor, Value, KeyUtils, Plain };

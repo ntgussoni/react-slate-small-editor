@@ -98,26 +98,26 @@ export default class Embed extends React.Component {
 
   handleBlur = e => {
     e.stopPropagation();
-    const video = e.target.value;
-    if (video === "") this.selfDestroy();
+    const src = e.target.value;
+    if (src === "") this.selfDestroy();
   };
 
   handleKeyPress = e => {
-    const video = e.target.value;
+    const src = e.target.value;
     const { "data-key": dataKey, editor } = this.props;
 
     if (e.key === "Enter") {
       e.preventDefault();
-      video !== ""
-        ? editor.setNodeByKey(dataKey, { data: { video } })
+      src !== ""
+        ? editor.setNodeByKey(dataKey, { data: { src } })
         : this.selfDestroy();
     }
   };
 
   getEmbedUrl = () => {
     const { data } = this.props;
-    const video = data.get("video");
-    const videoInfo = urlParser.parse(video);
+    const src = data.get("src");
+    const videoInfo = urlParser.parse(src);
 
     return videoInfo
       ? urlParser.create({
@@ -130,15 +130,15 @@ export default class Embed extends React.Component {
   render() {
     const { value } = this.state;
     const { data } = this.props;
-    const video = data.get("video");
+    const src = data.get("src");
 
-    const isBlob = typeof window !== "undefined" && video instanceof Blob;
-    const isUrl = typeof video === "string";
+    const isBlob = typeof window !== "undefined" && src instanceof Blob;
+    const isUrl = typeof src === "string";
     const embedUrl = isUrl && this.getEmbedUrl();
 
     // THIS SUCKS TODO: IMPROVE ntorres
     const renderIframe = embedUrl;
-    const renderVideo = video && !isBlob && !renderIframe;
+    const renderVideo = src && !isBlob && !renderIframe;
     const renderPlaceholder = isBlob;
 
     if (renderPlaceholder) {
@@ -150,7 +150,7 @@ export default class Embed extends React.Component {
     }
 
     if (renderVideo) {
-      return <HtmlVideo video={video} />;
+      return <HtmlVideo video={src} />;
     }
 
     return (

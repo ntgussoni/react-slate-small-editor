@@ -74,51 +74,12 @@ export const wrapLink = (editor, href) => {
   editor.moveToEnd();
 };
 
-export const unwrapLink = editor => {
-  editor.unwrapInline("link");
-};
-
 export const setData = (editor, node, data) => {
   editor.setNodeByKey(node.key, { data: { ...node.data.toJS(), ...data } });
 };
 
 export const getData = (node, name, defaultValue = {}) => {
   return node.data.get(name) || defaultValue;
-};
-
-export const getAlignmentStyle = alignment => {
-  switch (alignment) {
-    case "align_right":
-      return { textAlign: "right" };
-    case "align_justify":
-      return { textAlign: "justify" };
-    case "align_center":
-      return { textAlign: "center" };
-    default:
-      return { textAlign: "left" };
-  }
-};
-
-export const hasLinks = editor => {
-  const { value } = editor;
-  return value.inlines.some(inline => inline.type === "link");
-};
-
-export const hasAlignment = (editor, alignment) => {
-  const { value } = editor;
-  return value.blocks.some(node => getData(node, "alignment") === alignment);
-};
-
-/**
- * Check if the current selection has a mark with `type` in it.
- *
- * @param {String} type
- * @return {Boolean}
- */
-
-export const hasMark = (editor, type) => {
-  const { value } = editor;
-  return value.activeMarks.some(mark => mark.type === type);
 };
 
 /**
@@ -131,4 +92,41 @@ export const hasMark = (editor, type) => {
 export const hasBlock = (editor, type) => {
   const { value } = editor;
   return value.blocks.some(node => node.type === type);
+};
+
+export const checkExcessText = (editor, maxCharacterCount) => {
+  const { value } = editor;
+  const texts = value.document.getTexts();
+  const decorations = [];
+  let count = 0;
+
+  texts.forEach(node => {
+    const { key, text } = node;
+    count += text.length;
+
+    if (count <= maxCharacterCount) return;
+
+    const offset = count - maxCharacterCount;
+
+    decorations.push({
+      anchor: {
+        key,
+        offset: offset > text.length ? 0 : text.length - offset
+      },
+      focus: { key, offset: text.length },
+      mark: { type: "highlight" }
+    });
+  });
+  // Make the change to decorations without saving it into the undo history,
+  // so that there isn't a confusing behavior when undoing.
+  editor.withoutSaving(() => {
+    editor.setDecorations(decorations);
+  });
+};
+
+export const getLetterCount = editor => {
+  const {
+    value: { document }
+  } = editor;
+  return document.getBlocks().reduce((memo, b) => memo + b.text.length, 0);
 };

@@ -1,34 +1,14 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { ReactComponent as VideoIcon } from "../../assets/icons/video-plus-regular.svg";
 
 import ImageUploadButton from "./image-upload-button";
 import VideoUploadButton from "./video-upload-button";
 
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 const Button = styled.span`
   cursor: pointer;
-  border: 1px solid #000;
   background: white;
-  border-radius: 100%;
-
-  ${props =>
-    props.opened &&
-    css`
-      transform: scale(1) rotate(0deg);
-      opacity: 1;
-      transition-duration: ${props => props.delay}ms;
-      transition-timing-function: ease-in;
-    `}
-  ${props =>
-    !props.opened &&
-    css`
-      transform: scale(0) rotate(-45deg);
-      opacity: 0;
-      transition-duration: ${props => props.delay}ms;
-      transition-timing-function: ease-in;
-    `}
 
   &:hover {
     svg {
@@ -57,75 +37,29 @@ const Icon = styled.span`
  * @type {Component}
  */
 
-const OpenButton = styled.div`
-  cursor: pointer;
+const StyledMenu = styled.div`
+  display: flex;
   position: relative;
-  width: 30px;
-  height: 30px;
-  background: white;
-  border: 1px solid #000;
-  color: #000;
-  background: white;
-  border-radius: 50%;
-  justify-content: center;
-
-  ${props =>
-    props.opened &&
-    css`
-      -webkit-transition: -webkit-transform 250ms;
-      transition: -webkit-transform 250ms;
-      transition: transform 250ms;
-      transition: transform 250ms, -webkit-transform 250ms;
-      -webkit-transform: rotate(45deg);
-      transform: rotate(45deg);
-    `}
-
-  ${props =>
-    !props.opened &&
-    css`
-      -webkit-transform: rotate(0);
-      transform: rotate(0);
-      -webkit-transition: -webkit-transform 0.1s;
-      transition: -webkit-transform 0.1s;
-      transition: transform 0.1s;
-      transition: transform 0.1s, -webkit-transform 0.1s;
-    `}
-
-
-  > span {
-    font-size: 24px;
-    line-height: 24px;
-  }
+  z-index: 1;
+  opacity: 0;
+  left: 0;
+  bottom: 0;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
-  transform: scale(1);
-  padding-left: 20px;
-
   > span {
     position: relative;
     width: 30px;
     height: 30px;
-    border-radius: 50%;
     display: flex;
     justify-content: center;
     margin-left: 10px;
   }
 `;
 
-const StyledMenu = styled.div`
-  display: flex;
-  position: absolute;
-  z-index: 1;
-  top: -10000px;
-  left: -10000px;
-  margin-left: -40px;
-`;
-
 export default class SideMenu extends React.Component {
   state = {
-    opened: false,
     ssrDone: false
   };
 
@@ -133,12 +67,6 @@ export default class SideMenu extends React.Component {
     this.setState({ ssrDone: true });
   }
 
-  toggleSideMenu = e => {
-    e.preventDefault();
-    this.setState(prevState => {
-      return { opened: !prevState.opened };
-    });
-  };
   /**
    * Render.
    *
@@ -147,37 +75,20 @@ export default class SideMenu extends React.Component {
 
   render() {
     const { className, innerRef, onFileSelected, editor } = this.props;
-    const { opened, ssrDone } = this.state;
+    const { ssrDone } = this.state;
 
     if (!ssrDone) {
       return null;
     }
 
-    const root = window.document.getElementsByTagName("body")[0];
-
-    return ReactDOM.createPortal(
-      <StyledMenu opened={opened} className={className} ref={innerRef}>
-        <OpenButton opened={opened} onMouseDown={this.toggleSideMenu}>
-          <Icon>+</Icon>
-        </OpenButton>
-
+    return (
+      <StyledMenu className={className} ref={innerRef}>
         <ButtonContainer>
-          <ImageUploadButton
-            editor={editor}
-            opened={opened}
-            toggleSideMenu={this.toggleSideMenu}
-            onFileSelected={onFileSelected}
-          />
-          <VideoUploadButton
-            editor={editor}
-            opened={opened}
-            toggleSideMenu={this.toggleSideMenu}
-            onFileSelected={onFileSelected}
-          />
-          {this.renderButton("video", VideoIcon, 150, opened)}
+          <ImageUploadButton editor={editor} onFileSelected={onFileSelected} />
+          <VideoUploadButton editor={editor} onFileSelected={onFileSelected} />
+          {this.renderButton("video", VideoIcon, 150)}
         </ButtonContainer>
-      </StyledMenu>,
-      root
+      </StyledMenu>
     );
   }
 
@@ -189,14 +100,9 @@ export default class SideMenu extends React.Component {
    * @return {Element}
    */
 
-  renderButton(type, Image, delay, opened) {
+  renderButton(type, Image) {
     return (
-      <Button
-        delay={delay}
-        opened={opened}
-        reversed
-        onMouseDown={event => this.onButtonClick(event, type)}
-      >
+      <Button reversed onMouseDown={event => this.onButtonClick(event, type)}>
         <Icon>
           <Image />
         </Icon>

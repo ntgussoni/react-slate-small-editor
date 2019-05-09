@@ -32,7 +32,9 @@ class Example extends Component {
       <ReactSlateSmallEditor
         onChange={this.onChange}
         value={value}
-        onFileSelected={file => someFunction(file)}
+        onFileSelected={async file => upload(file)}
+        maxCharacterCount={maxCharacterCount}
+        renderCount={count => `${count} / ${maxCharacterCount}`}
       />
     );
   }
