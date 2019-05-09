@@ -36,8 +36,9 @@ export default {
     url(),
     svgr(),
     babel({
+      presets: [["@babel/preset-env"]],
       exclude: ["node_modules/**", "*.json"],
-      plugins: ["external-helpers", "babel-plugin-styled-components"]
+      plugins: ["babel-plugin-styled-components"]
     }),
     json({
       exclude: ["node_modules/**"]
