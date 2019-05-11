@@ -1,6 +1,6 @@
 # react-slate-small-editor
 
-> WYSIWYG Medium-like editor for react
+> WYSIWYG Twitter-like comment editor for react
 
 [![NPM](https://img.shields.io/npm/v/react-slate-small-editor.svg)](https://www.npmjs.com/package/react-slate-small-editor) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
