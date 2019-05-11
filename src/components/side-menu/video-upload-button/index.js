@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { ReactComponent as VideoIcon } from "../../../assets/icons/video-plus-regular.svg";
 import { insertVideo, setData } from "../../../helpers";
 import styled from "styled-components";
@@ -20,7 +20,7 @@ export default class ImageUploadButton extends React.Component {
 
   render() {
     return (
-      <Fragment>
+      <>
         <input
           style={{ display: "none" }}
           type="file"
@@ -32,7 +32,7 @@ export default class ImageUploadButton extends React.Component {
             <VideoIcon />
           </Icon>
         </Button>
-      </Fragment>
+      </>
     );
   }
 }

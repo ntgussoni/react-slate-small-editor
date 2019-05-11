@@ -7,6 +7,7 @@ import url from "rollup-plugin-url";
 import svgr from "@svgr/rollup";
 import json from "rollup-plugin-json";
 import builtins from "rollup-plugin-node-builtins";
+import replace from "rollup-plugin-replace";
 
 import pkg from "./package.json";
 
@@ -29,6 +30,9 @@ export default {
     ...Object.keys(pkg.peerDependencies || {})
   ],
   plugins: [
+    replace({
+      "process.env.NODE_ENV": JSON.stringify("production")
+    }),
     external(),
     postcss({
       modules: true
@@ -46,39 +50,7 @@ export default {
     resolve(),
     builtins(),
     commonjs({
-      include: "node_modules/**",
-      namedExports: {
-        // "node_modules/immutable/dist/immutable.js": [
-        //   "Iterable",
-        //   "Seq",
-        //   "Collection",
-        //   "Map",
-        //   "OrderedMap",
-        //   "List",
-        //   "Stack",
-        //   "Set",
-        //   "OrderedSet",
-        //   "Record",
-        //   "Range",
-        //   "Repeat",
-        //   "is",
-        //   "fromJS"
-        // ],
-        "node_modules/esrever/esrever.js": ["reverse"],
-        "node_modules/react/index.js": [
-          "cloneElement",
-          "createContext",
-          "Component",
-          "createElement",
-          "Fragment"
-        ],
-        "node_modules/react-dom/index.js": ["render", "hydrate"],
-        "node_modules/react-is/index.js": [
-          "isElement",
-          "isValidElementType",
-          "ForwardRef"
-        ]
-      }
+      include: "node_modules/**"
     })
   ]
 };

@@ -58,14 +58,13 @@ const ButtonContainer = styled.div`
   }
 `;
 
-export default class SideMenu extends React.Component {
-  state = {
-    ssrDone: false
+const SideMenu = ({ className, onFileSelected, editor }, ref) => {
+  const onButtonClick = (e, type) => {
+    e.preventDefault();
+    if (type === "video") {
+      editor.setBlocks("embed");
+    }
   };
-
-  componentDidMount() {
-    this.setState({ ssrDone: true });
-  }
 
   /**
    * Render.
@@ -73,48 +72,19 @@ export default class SideMenu extends React.Component {
    * @return {Element}
    */
 
-  render() {
-    const { className, innerRef, onFileSelected, editor } = this.props;
-    const { ssrDone } = this.state;
+  return (
+    <StyledMenu className={className} ref={ref}>
+      <ButtonContainer>
+        <ImageUploadButton editor={editor} onFileSelected={onFileSelected} />
+        <VideoUploadButton editor={editor} onFileSelected={onFileSelected} />
+        <Button reversed onMouseDown={event => onButtonClick(event, "video")}>
+          <Icon>
+            <VideoIcon />
+          </Icon>
+        </Button>
+      </ButtonContainer>
+    </StyledMenu>
+  );
+};
 
-    if (!ssrDone) {
-      return null;
-    }
-
-    return (
-      <StyledMenu className={className} ref={innerRef}>
-        <ButtonContainer>
-          <ImageUploadButton editor={editor} onFileSelected={onFileSelected} />
-          <VideoUploadButton editor={editor} onFileSelected={onFileSelected} />
-          {this.renderButton("video", VideoIcon, 150)}
-        </ButtonContainer>
-      </StyledMenu>
-    );
-  }
-
-  /**
-   * Render a mark-toggling toolbar button.
-   *
-   * @param {String} type
-   * @param {String} icon
-   * @return {Element}
-   */
-
-  renderButton(type, Image) {
-    return (
-      <Button reversed onMouseDown={event => this.onButtonClick(event, type)}>
-        <Icon>
-          <Image />
-        </Icon>
-      </Button>
-    );
-  }
-
-  onButtonClick = (e, type) => {
-    e.preventDefault();
-    const { editor } = this.props;
-    if (type === "video") {
-      editor.setBlocks("embed");
-    }
-  };
-}
+export default React.forwardRef(SideMenu);

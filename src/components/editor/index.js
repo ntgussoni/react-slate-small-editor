@@ -1,10 +1,31 @@
 import React from "react";
-import Plain from "slate-plain-serializer";
+import { Value } from "slate";
 import { Editor } from "slate-react";
 import { DEFAULT_NODE, getLetterCount, checkExcessText } from "../../helpers";
 import SideMenu from "../side-menu";
 import Embed from "../embed";
 import schema from "../schema";
+
+var EMPTY_VALUE = {
+  document: {
+    nodes: [
+      {
+        object: "block",
+        type: "paragraph",
+        nodes: [
+          {
+            object: "text",
+            leaves: [
+              {
+                text: ""
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+};
 
 const Image = ({ attributes, data }) => (
   <img
@@ -49,6 +70,8 @@ export default class ReactSlateSmallEditor extends React.Component {
    * On update, update the menu.
    */
 
+  sideMenu = React.createRef();
+
   componentDidUpdate = () => {
     this.updateSideMenu();
   };
@@ -66,7 +89,7 @@ export default class ReactSlateSmallEditor extends React.Component {
     const { value, readOnly } = this.props;
     if (readOnly) return;
 
-    const sideMenu = this.sideMenu;
+    const sideMenu = this.sideMenu.current;
     if (!sideMenu) return;
 
     if (!value) return;
@@ -106,7 +129,6 @@ export default class ReactSlateSmallEditor extends React.Component {
 
   render() {
     const { value, placeholder, readOnly, className, style } = this.props;
-
     return (
       <Editor
         className={className}
@@ -114,7 +136,7 @@ export default class ReactSlateSmallEditor extends React.Component {
         ref={ref => (this.editor = ref)}
         readOnly={readOnly}
         placeholder={placeholder || "Enter some text..."}
-        value={value || Plain.deserialize("")}
+        value={value || Value.create(EMPTY_VALUE)}
         onChange={this.onChange}
         renderEditor={this.renderEditor}
         renderNode={this.renderNode}
@@ -148,10 +170,9 @@ export default class ReactSlateSmallEditor extends React.Component {
 
     return (
       <>
-        {children}
-
+        <div>{children}</div>
         <SideMenu
-          innerRef={sideMenu => (this.sideMenu = sideMenu)}
+          ref={this.sideMenu}
           editor={editor}
           onFileSelected={onFileSelected}
         />
@@ -228,6 +249,6 @@ export default class ReactSlateSmallEditor extends React.Component {
     const { maxCharacterCount, readOnly } = this.props;
     const showCharacterCount = maxCharacterCount > 0 && !readOnly;
     if (showCharacterCount) checkExcessText(editor, maxCharacterCount);
-    return next();
+    next();
   };
 }

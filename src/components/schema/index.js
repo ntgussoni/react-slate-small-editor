@@ -16,15 +16,14 @@ const schema = {
         match: [{ type: DEFAULT_NODE }, { type: "image" }, { type: "embed" }]
       }
     ],
-    normalize: (editor, { code, node, child, mark }) => {
-      console.log("ERROR", code, mark);
+    normalize: (editor, { code, node, child }) => {
       switch (code) {
         case "last_child_type_invalid": {
           const paragraph = Block.create(DEFAULT_NODE);
           return editor.insertNodeByKey(node.key, node.nodes.size, paragraph);
         }
         case "child_type_invalid": {
-          editor.setNodeByKey(child.key, DEFAULT_NODE);
+          editor.setNodeByKey(child.key, { type: DEFAULT_NODE });
           return;
         }
       }
