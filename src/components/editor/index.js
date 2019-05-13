@@ -119,6 +119,7 @@ export default class ReactSlateSmallEditor extends React.Component {
       return;
     }
 
+    sideMenu.style.display = "flex";
     sideMenu.style.opacity = 1;
   };
 

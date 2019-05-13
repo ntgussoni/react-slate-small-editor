@@ -38,7 +38,7 @@ const Icon = styled.span`
  */
 
 const StyledMenu = styled.div`
-  display: flex;
+  display: none;
   position: relative;
   z-index: 1;
   opacity: 0;
