@@ -1,10 +1,11 @@
 import React from "react";
 import { Value } from "slate";
 import { Editor } from "slate-react";
-import { DEFAULT_NODE, getLetterCount, checkExcessText } from "../../helpers";
-import SideMenu from "../side-menu";
-import Embed from "../embed";
+import { DEFAULT_NODE, checkExcessText } from "../../helpers";
 import schema from "../schema";
+import renderEditor from "./render-editor";
+import renderNode from "./render-node";
+import renderMark from "./render-mark";
 
 var EMPTY_VALUE = {
   document: {
@@ -25,34 +26,6 @@ var EMPTY_VALUE = {
       }
     ]
   }
-};
-
-const Image = ({ attributes, data }) => (
-  <img
-    src={data.get("src")}
-    {...attributes}
-    style={{ width: "100%", boxSizing: "border-box" }}
-  />
-);
-
-const Paragraph = ({ attributes, children }) => (
-  <p {...attributes}>{children}</p>
-);
-
-const VideoEmbed = ({ attributes, data, editor }) => (
-  <Embed {...attributes} editor={editor} data={data} />
-);
-
-const Highlight = ({ attributes, children }) => (
-  <mark {...attributes} style={{ backgroundColor: "#ff00595e" }}>
-    {children}
-  </mark>
-);
-const DEFAULT_COMPONENTS = {
-  image: Image,
-  paragraph: Paragraph,
-  embed: VideoEmbed,
-  highlight: Highlight
 };
 
 /**
@@ -130,114 +103,39 @@ export default class ReactSlateSmallEditor extends React.Component {
    */
 
   render() {
-    const { value, placeholder, readOnly, className, style } = this.props;
-    return (
-      <>
-        <Editor
-          className={className}
-          style={style}
-          ref={ref => (this.editor = ref)}
-          readOnly={readOnly}
-          placeholder={placeholder || "Enter some text..."}
-          value={value || Value.create(EMPTY_VALUE)}
-          onChange={this.onChange}
-          renderEditor={this.renderEditor}
-          renderNode={this.renderNode}
-          renderMark={this.renderMark}
-          onKeyDown={this.onKeyDown}
-          schema={schema}
-        />
-      </>
-    );
-  }
-
-  /**
-   * Render the editor.
-   *
-   * @param {Object} props
-   * @param {Function} next
-   * @return {Element}
-   */
-  editorCount = 0;
-  renderEditor = (props, editor, next) => {
     const {
+      value,
+      placeholder,
       readOnly,
+      className,
+      style,
       onFileSelected,
       maxCharacterCount,
-      renderCount
+      renderCount,
+      components
     } = this.props;
-    const children = next();
-
-    const showCharacterCount = maxCharacterCount > 0 && !readOnly;
-    let lettersCount = 0;
-    if (showCharacterCount) lettersCount = getLetterCount(editor);
-
     return (
-      <>
-        <div>{children}</div>
-        <SideMenu
-          ref={this.sideMenu}
-          editor={editor}
-          onFileSelected={onFileSelected}
-        />
-
-        {showCharacterCount && renderCount(lettersCount)}
-        <div>{this.editorCount++}</div>
-      </>
+      <Editor
+        className={className}
+        style={style}
+        ref={ref => (this.editor = ref)}
+        readOnly={readOnly}
+        placeholder={placeholder || "Enter some text..."}
+        value={value || Value.create(EMPTY_VALUE)}
+        onChange={this.onChange}
+        renderEditor={renderEditor}
+        renderNode={renderNode}
+        renderMark={renderMark}
+        onKeyDown={this.onKeyDown}
+        schema={schema}
+        onFileSelected={onFileSelected}
+        maxCharacterCount={maxCharacterCount}
+        renderCount={renderCount}
+        components={components}
+        sideMenu={this.sideMenu}
+      />
     );
-  };
-
-  /**
-   * Render a Slate node.
-   *
-   * @param {Object} props
-   * @return {Element}
-   */
-
-  renderNode = (props, editor, next) => {
-    const { attributes, node, children, isFocused } = props;
-    const { components } = this.props;
-    const Component = components[node.type] || DEFAULT_COMPONENTS[node.type];
-
-    if (!Component) {
-      console.error(
-        `There's no component for node: ${node.type}, SKIPPING node`
-      );
-      return next();
-    }
-
-    return (
-      <Component
-        attributes={attributes}
-        data={node.data}
-        editor={editor}
-        selected={isFocused}
-      >
-        {children}
-      </Component>
-    );
-  };
-
-  /**
-   * Render a Slate mark.
-   *
-   * @param {Object} props
-   * @param {Editor} editor
-   * @param {Function} next
-   * @return {Element}
-   */
-
-  renderMark = (props, editor, next) => {
-    const { children, mark, attributes } = props;
-    const { components = {} } = this.props;
-    const Component = components[mark.type] || DEFAULT_COMPONENTS[mark.type];
-
-    if (!Component) {
-      return next();
-    }
-
-    return <Component attributes={attributes}>{children}</Component>;
-  };
+  }
 
   /**
    * On change.
@@ -253,7 +151,7 @@ export default class ReactSlateSmallEditor extends React.Component {
   onKeyDown = (event, editor, next) => {
     next();
     setTimeout(() => {
-      const { maxCharacterCount, readOnly } = this.props;
+      const { maxCharacterCount, readOnly } = editor.props;
       const showCharacterCount = maxCharacterCount > 0 && !readOnly;
       if (showCharacterCount) checkExcessText(editor, maxCharacterCount);
     }, 0);
