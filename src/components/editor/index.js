@@ -44,9 +44,9 @@ const VideoEmbed = ({ attributes, data, editor }) => (
 );
 
 const Highlight = ({ attributes, children }) => (
-  <span {...attributes} style={{ backgroundColor: "#ff00595e" }}>
+  <mark {...attributes} style={{ backgroundColor: "#ff00595e" }}>
     {children}
-  </span>
+  </mark>
 );
 const DEFAULT_COMPONENTS = {
   image: Image,
@@ -62,6 +62,7 @@ const DEFAULT_COMPONENTS = {
  */
 export default class ReactSlateSmallEditor extends React.Component {
   static defaultProps = {
+    readOnly: false,
     maxCharacterCount: 0,
     renderCount: () => {},
     components: {}
@@ -130,20 +131,22 @@ export default class ReactSlateSmallEditor extends React.Component {
   render() {
     const { value, placeholder, readOnly, className, style } = this.props;
     return (
-      <Editor
-        className={className}
-        style={style}
-        ref={ref => (this.editor = ref)}
-        readOnly={readOnly}
-        placeholder={placeholder || "Enter some text..."}
-        value={value || Value.create(EMPTY_VALUE)}
-        onChange={this.onChange}
-        renderEditor={this.renderEditor}
-        renderNode={this.renderNode}
-        renderMark={this.renderMark}
-        onKeyUp={this.onKeyUp}
-        schema={schema}
-      />
+      <>
+        <Editor
+          className={className}
+          style={style}
+          ref={ref => (this.editor = ref)}
+          readOnly={readOnly}
+          placeholder={placeholder || "Enter some text..."}
+          value={value || Value.create(EMPTY_VALUE)}
+          onChange={this.onChange}
+          renderEditor={this.renderEditor}
+          renderNode={this.renderNode}
+          renderMark={this.renderMark}
+          onKeyDown={this.onKeyDown}
+          schema={schema}
+        />
+      </>
     );
   }
 
@@ -154,7 +157,7 @@ export default class ReactSlateSmallEditor extends React.Component {
    * @param {Function} next
    * @return {Element}
    */
-
+  editorCount = 0;
   renderEditor = (props, editor, next) => {
     const {
       readOnly,
@@ -178,6 +181,7 @@ export default class ReactSlateSmallEditor extends React.Component {
         />
 
         {showCharacterCount && renderCount(lettersCount)}
+        <div>{this.editorCount++}</div>
       </>
     );
   };
@@ -245,10 +249,12 @@ export default class ReactSlateSmallEditor extends React.Component {
     onChange(change.value);
   };
 
-  onKeyUp = (event, editor, next) => {
-    const { maxCharacterCount, readOnly } = this.props;
-    const showCharacterCount = maxCharacterCount > 0 && !readOnly;
-    if (showCharacterCount) checkExcessText(editor, maxCharacterCount);
+  onKeyDown = (event, editor, next) => {
     next();
+    setTimeout(() => {
+      const { maxCharacterCount, readOnly } = this.props;
+      const showCharacterCount = maxCharacterCount > 0 && !readOnly;
+      if (showCharacterCount) checkExcessText(editor, maxCharacterCount);
+    }, 0);
   };
 }

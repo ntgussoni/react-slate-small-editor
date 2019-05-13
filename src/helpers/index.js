@@ -119,6 +119,7 @@ export const checkExcessText = (editor, maxCharacterCount) => {
   });
   // Make the change to decorations without saving it into the undo history,
   // so that there isn't a confusing behavior when undoing.
+
   editor.withoutSaving(() => {
     editor.setDecorations(decorations);
   });
