@@ -39,15 +39,16 @@ const Icon = styled.span`
 
 const StyledMenu = styled.div`
   display: none;
-  position: relative;
+  position: absolute;
   z-index: 1;
   opacity: 0;
   left: 0;
-  bottom: 0;
+  bottom: -42px;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
+
   > span {
     position: relative;
     width: 30px;
@@ -55,10 +56,12 @@ const ButtonContainer = styled.div`
     display: flex;
     justify-content: center;
     margin-left: 10px;
+    border: 1px solid #e3e3e3;
+    border-radius: 50%;
   }
 `;
 
-const SideMenu = ({ className, onFileSelected, editor }, ref) => {
+const SideMenu = ({ onFileSelected, editor }, ref) => {
   const onButtonClick = (e, type) => {
     e.preventDefault();
     if (type === "video") {
@@ -73,7 +76,7 @@ const SideMenu = ({ className, onFileSelected, editor }, ref) => {
    */
 
   return (
-    <StyledMenu className={className} ref={ref}>
+    <StyledMenu className="side-menu" ref={ref}>
       <ButtonContainer>
         <ImageUploadButton editor={editor} onFileSelected={onFileSelected} />
         <VideoUploadButton editor={editor} onFileSelected={onFileSelected} />

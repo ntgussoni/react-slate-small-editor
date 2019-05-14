@@ -116,7 +116,7 @@ export default class ReactSlateSmallEditor extends React.Component {
     } = this.props;
     return (
       <Editor
-        className={className}
+        wrapperClassname={className}
         style={style}
         ref={ref => (this.editor = ref)}
         readOnly={readOnly}

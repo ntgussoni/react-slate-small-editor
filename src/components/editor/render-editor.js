@@ -12,11 +12,11 @@ import SideMenu from "../side-menu";
 const renderEditor = (props, editor, next) => {
   const {
     readOnly,
-    className,
+    wrapperClassname,
     onFileSelected,
     maxCharacterCount,
     renderCount,
-    sideMenu
+    sideMenu: sideMenuRef
   } = props;
 
   const children = next();
@@ -26,15 +26,17 @@ const renderEditor = (props, editor, next) => {
   if (showCharacterCount) lettersCount = getLetterCount(editor);
 
   return (
-    <div className={className}>
-      <div>{children}</div>
-      <SideMenu
-        ref={sideMenu}
-        editor={editor}
-        onFileSelected={onFileSelected}
-      />
+    <div className={wrapperClassname}>
+      <>{children}</>
+      <>{showCharacterCount && renderCount(lettersCount)}</>
 
-      {showCharacterCount && renderCount(lettersCount)}
+      <>
+        <SideMenu
+          ref={sideMenuRef}
+          editor={editor}
+          onFileSelected={onFileSelected}
+        />
+      </>
     </div>
   );
 };
