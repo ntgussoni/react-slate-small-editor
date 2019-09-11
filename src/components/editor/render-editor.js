@@ -26,7 +26,7 @@ const renderEditor = (props, editor, next) => {
   if (showCharacterCount) lettersCount = getLetterCount(editor);
 
   return (
-    <div className={wrapperClassname}>
+    <div className={wrapperClassname} style={{ position: "relative" }}>
       <>{children}</>
       <>{showCharacterCount && renderCount(lettersCount)}</>
 

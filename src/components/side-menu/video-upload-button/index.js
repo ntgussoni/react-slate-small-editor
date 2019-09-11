@@ -1,7 +1,7 @@
 import React from "react";
 import { ReactComponent as VideoIcon } from "../../../assets/icons/video-plus-regular.svg";
 import { insertVideo, setData } from "../../../helpers";
-import styled from "styled-components";
+import { Button, Icon } from "../Button";
 
 export default class ImageUploadButton extends React.Component {
   handleFileSelection = e => {
@@ -36,28 +36,3 @@ export default class ImageUploadButton extends React.Component {
     );
   }
 }
-
-const Button = styled.span`
-  cursor: pointer;
-  background: white;
-
-  &:hover {
-    svg {
-      color: #ccc;
-    }
-  }
-`;
-
-const Icon = styled.span`
-  vertical-align: text-bottom;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    height: 17px;
-    box-sizing: content-box;
-    background-size: cover;
-    color: ${props => (props.active ? "#ccc" : "#000")};
-  }
-`;

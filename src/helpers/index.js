@@ -24,7 +24,7 @@ export const insertImage = (editor, { file = null, type = "file" }, target) => {
 
   const imageBlock = Block.create({
     type: "image",
-    data: { src }
+    data: { src, isLoading: true }
   });
 
   editor.insertBlock(imageBlock);

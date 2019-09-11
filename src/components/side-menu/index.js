@@ -1,35 +1,9 @@
 import React from "react";
-import { ReactComponent as VideoIcon } from "../../assets/icons/video-plus-regular.svg";
-
+import styled from "styled-components";
+import { ReactComponent as VideoIcon } from "../../assets/icons/play-circle-regular.svg";
 import ImageUploadButton from "./image-upload-button";
 import VideoUploadButton from "./video-upload-button";
-
-import styled from "styled-components";
-
-const Button = styled.span`
-  cursor: pointer;
-  background: white;
-
-  &:hover {
-    svg {
-      color: #ccc;
-    }
-  }
-`;
-
-const Icon = styled.span`
-  vertical-align: text-bottom;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    height: 17px;
-    box-sizing: content-box;
-    background-size: cover;
-    color: ${props => (props.active ? "#ccc" : "#000")};
-  }
-`;
+import { Button, Icon } from "./Button";
 
 /**
  * Give the menu some styles.
